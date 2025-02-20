@@ -41,7 +41,7 @@ app.post('/signup', async (req, res) => {
     
     
 })
-app.post('/signin', (req, res) => {
+app.post('/signin', async (req, res) => {
     const { data, success, error } = AuthSchema.safeParse(req.body)
     if(!success){
         res.json({
@@ -49,18 +49,43 @@ app.post('/signin', (req, res) => {
         })
         return;
     }
-    // const userId = fetch from db
-    const userId = "1"
-    const token = jwt.sign({
-        userId: userId
-    } , JWT_SECRET)
-    
-    req.headers['authorization'] = token
-    
-    res.json({
-        message: `Signed in ${data.username} !`,
-        token: token
-    })
+    try{
+        const user = await prismaClient.user.findUnique({
+            where: {
+                username: data.username
+            }
+        })
+
+        if(!user){
+            res.status(401).json({
+                message: "User doesn't exist"
+            })
+            return;
+        }
+
+        const match = await bcrypt.compare(data.password, user.password)
+        if(!match){
+            res.status(401).json({
+                message: "Incorrect password"
+            })
+            return;
+        }
+
+        const token = jwt.sign({
+            userId: user.id
+        }, JWT_SECRET)
+
+        res.json({
+            message: `Signed in ${data.username} !`,
+            token: token
+        })
+    } catch(err){
+        console.error("Error signing up:", err);
+        res.status(500).json({
+            message: "Failed to sign in",
+            error: err
+        });
+    }
 })
 app.post('/createRoom', authMiddleware, (req, res) => {
     const { data, success, error } = RoomSchema.safeParse({
