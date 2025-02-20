@@ -1,10 +1,4 @@
-import express, { Router } from 'express'
-import { JWT_SECRET } from '@repo/backend-common/config'
-import { AuthSchema, RoomSchema } from "@repo/common/schema"
-import jwt from 'jsonwebtoken'
-import { authMiddleware } from './middleware'
-import { prismaClient } from '@repo/db/db'
-import bcrypt from 'bcrypt'
+import express from 'express'
 import { authRouter } from './routes/authRouter';
 import { roomRouter } from './routes/roomRouter'
 
