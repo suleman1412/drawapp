@@ -11,16 +11,31 @@ datasource db {
 }
 
 model User {
-  id          Int    @id @default(autoincrement()) @unique
-  username    String @unique
+  id          Int       @id @default(autoincrement()) @unique
+  username    String    @unique
   password    String
+  photo       String?
   rooms       Room[]
+  chats       Chat[]
 }
 
 model Room {
-  id          Int  @id @default(autoincrement()) @unique
-  roomId      String  @unique @default(uuid())
+  id          Int         @id @default(autoincrement()) @unique
+  roomId      String      @unique @default(uuid())
   roomName    String
   ownerId     Int
-  owner       User @relation(fields: [ownerId], references: [id])
+  owner       User        @relation(fields: [ownerId], references: [id])
+  chat        Chat[]
+
+  createdAt   DateTime    @default(now())
+}
+
+model Chat{
+  id            Int         @id @default(autoincrement())
+  roomId        String
+  message       String
+  userId        Int
+  room          Room        @relation(fields: [roomId], references: [roomId])
+  user          User        @relation(fields: [userId], references: [id])
+  createdAt     DateTime    @default(now())
 }
