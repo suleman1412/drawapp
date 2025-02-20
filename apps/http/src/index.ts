@@ -3,21 +3,43 @@ import { JWT_SECRET } from '@repo/backend-common/config'
 import { AuthSchema, RoomSchema } from "@repo/common/schema"
 import jwt from 'jsonwebtoken'
 import { authMiddleware } from './middleware'
+import { prismaClient } from '@repo/db/db'
+import bcrypt from 'bcrypt'
 
 const app = express()
 app.use(express.json())
 
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
     const { data, success, error } = AuthSchema.safeParse(req.body)
-    if(!success){
+    if(!success && !data){
         res.json({
             error: error
         })
         return;
     }
-    res.json({
-        message: `Signed up ${data.username} !`
-    })
+    try{
+        const hashedPassword = await bcrypt.hash(data.password, 5)
+        const user = await prismaClient.user.create({
+            data: {
+                username: data.username,
+                password: hashedPassword
+            }
+        })
+
+        res.status(201).json({
+            message: `Signed up ${data.username}, User added to DB !`,
+            userId: user.id
+        })
+    } catch(err){
+        console.error("Error creating user:", err);
+        res.status(500).json({
+            message: "Failed to create user",
+            error: err
+        });
+    }
+
+    
+    
 })
 app.post('/signin', (req, res) => {
     const { data, success, error } = AuthSchema.safeParse(req.body)
