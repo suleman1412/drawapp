@@ -13,5 +13,5 @@ export const AuthSchema = z.object({
 
 export const RoomSchema = z.object({
     roomId: z.number().nonnegative(),
-    userId: z.number().nonnegative()
+    userId: z.coerce.number().nonnegative()
 })

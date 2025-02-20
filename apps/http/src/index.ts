@@ -55,7 +55,7 @@ app.post('/createRoom', authMiddleware, (req, res) => {
 
     res.status(200).json({
         // @ts-ignore
-        message: `Room created for ${req.userId} : ${req.body}` 
+        message: `Room created for ${req.userId} : ${req.body.roomId}` 
     })
 })
 
