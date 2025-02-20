@@ -79,11 +79,11 @@ app.post('/signin', async (req, res) => {
             message: `Signed in ${data.username} !`,
             token: token
         })
-    } catch(error){
-        console.error("Error signing up:", error);
+    } catch(err){
+        console.error("Error signing up:", err);
         res.status(500).json({
             message: "Failed to sign in",
-            error: error
+            error: err
         });
     }
 })
