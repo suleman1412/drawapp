@@ -9,7 +9,8 @@
     "dev": "pnpm build && pnpm start"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "@repo/backend-common": "workspace:*"
   },
   "keywords": [],
   "author": "",
