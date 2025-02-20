@@ -37,9 +37,6 @@ app.post('/signup', async (req, res) => {
             error: err
         });
     }
-
-    
-    
 })
 app.post('/signin', async (req, res) => {
     const { data, success, error } = AuthSchema.safeParse(req.body)
@@ -87,23 +84,33 @@ app.post('/signin', async (req, res) => {
         });
     }
 })
-app.post('/createRoom', authMiddleware, (req, res) => {
+app.post('/createRoom', authMiddleware, async(req, res) => {
     const { data, success, error } = RoomSchema.safeParse({
         ...req.body,
         // @ts-ignore
-        userId: req.userId
+        ownerId: req.userId
     })
-    if (!success){
+    if (!success && !data){
         res.json({
             error: error
         })
         return;
     }
+    const room = await prismaClient.room.create({
+        data: {
+            roomName: data.roomName,
+            ownerId: data.ownerId
+        }
+    })
 
     res.status(200).json({
-        // @ts-ignore
-        message: `Room created for ${req.userId} : ${req.body.roomId}` 
+        message: "Room created",
+        data: {
+            ownerId: data.ownerId,
+            roomId: room.roomId
+        }
     })
 })
+
 
 app.listen(3001, () => console.log('server on port 3001'))
