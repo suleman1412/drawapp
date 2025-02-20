@@ -82,7 +82,7 @@ app.post('/signin', async (req, res) => {
     } catch(err){
         console.error("Error signing up:", err);
         res.status(500).json({
-            message: "Failed to sign i",
+            message: "Failed to sign in",
             error: err
         });
     }
