@@ -36,6 +36,9 @@ importers:
       '@repo/common':
         specifier: workspace:*
         version: link:../../packages/common
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -98,6 +101,9 @@ importers:
       '@repo/backend-common':
         specifier: workspace:*
         version: link:../../packages/backend-common
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -123,9 +129,16 @@ importers:
 
   packages/db:
     dependencies:
+      '@prisma/client':
+        specifier: 6.4.0
+        version: 6.4.0(prisma@6.4.0(typescript@5.7.3))(typescript@5.7.3)
       prisma:
         specifier: ^6.4.0
         version: 6.4.0(typescript@5.7.3)
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
 
   packages/eslint-config:
     devDependencies:
@@ -600,6 +613,18 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
+
+  '@prisma/client@6.4.0':
+    resolution: {integrity: sha512-48tLb+VL7iuuqJXjD4Xbqa622fuh8UtqmjTf39AKrQjlTUdNaMc9sC/c49eXQkcnrAdh9FoS1qVupmZSYiZ9TQ==}
+    engines: {node: '>=18.18'}
+    peerDependencies:
+      prisma: '*'
+      typescript: '>=5.1.0'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+      typescript:
+        optional: true
 
   '@prisma/debug@6.4.0':
     resolution: {integrity: sha512-zXsLpNXLypdThJjItqk0u/3uitcD9+9rNynZPPu4Xp7664yp8VbxCGTVBS696vA0e3kw0Xv/4muR+cNHkxspcw==}
@@ -2868,6 +2893,11 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.18.0
+
+  '@prisma/client@6.4.0(prisma@6.4.0(typescript@5.7.3))(typescript@5.7.3)':
+    optionalDependencies:
+      prisma: 6.4.0(typescript@5.7.3)
+      typescript: 5.7.3
 
   '@prisma/debug@6.4.0': {}
 
