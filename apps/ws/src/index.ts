@@ -4,6 +4,22 @@ import jwt from 'jsonwebtoken'
 
 const wss = new WebSocketServer({ port: 8080 })
 
+const checkUser = (token: string): string | null => {
+    try{
+        const decoded = jwt.verify(token, JWT_SECRET)
+        if(!decoded || typeof decoded === 'string'){
+            console.log("Invalid token")
+            return null;
+        }
+        
+        return decoded.userId
+    } catch(err){
+        console.error(err)
+        return null;
+    }
+}
+
+
 wss.on('connection', (socket, req) => {
     // on error close the port
     socket.on('error', (err) => {
@@ -11,6 +27,7 @@ wss.on('connection', (socket, req) => {
         socket.close()
     })
 
+    // Token in the URL
     const url = req.url;
     if(!url){
         console.log('no url')
@@ -19,20 +36,18 @@ wss.on('connection', (socket, req) => {
     }
     
     const queryParams = new URLSearchParams(url.split('?')[1]);
-
     const token = queryParams.get('token')
     if(!token){
         console.log('token not provided')
         socket.close()
-        return;
+        return null;
     }
-
-    const decoded = jwt.verify(token, JWT_SECRET)
-    if(!decoded){
-        console.log("Invalid token")
+    const userId = checkUser(token)
+    if(!userId){
         socket.close()
-        return;
     }
+    
+   
     // On any message, send back 'pong'
     socket.on('message', (message) => {
         socket.send(message.toString())
