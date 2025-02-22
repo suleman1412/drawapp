@@ -8,13 +8,8 @@ chatRouter.get('/:roomId', async(req, res) => {
     try{
         const chats = await prismaClient.chat.findMany({
             where: { roomId: roomId },
-            select: {
-                message: true,
-                user: { select: { username: true } },
-                room: { select: { roomName: true }},
-                createdAt: true,
-            },
-            orderBy: { createdAt: 'asc' }
+            orderBy: { createdAt: 'desc' },
+            take: 50
         })
     
         if(chats.length === 0){

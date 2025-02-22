@@ -8,14 +8,11 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 export const authRouter: Router = Router()
 
 authRouter.post('/signup', async (req, res) => {
-    const { data, success, error } = AuthSchema.safeParse(req.body)
-    if(!success && !data){
-        res.json({
-            error: error
-        })
-        return;
-    }
     try{
+        const { data, success, error } = AuthSchema.safeParse(req.body)
+        if(!success && !data){
+            throw new Error('Zod Error')
+        }
         const hashedPassword = await bcrypt.hash(data.password, 5)
         const user = await prismaClient.user.create({
             data: {
@@ -74,6 +71,7 @@ authRouter.post('/signin', async (req, res) => {
             message: `Signed in ${data.username} !`,
             token: token
         })
+        
     } catch(err){
         console.error("Error signing up:", err);
         res.status(500).json({
