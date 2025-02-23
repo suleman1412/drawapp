@@ -22,7 +22,7 @@ model User {
 model Room {
   id          Int         @id @default(autoincrement()) @unique
   roomId      String      @unique @default(uuid())
-  roomName    String
+  roomName    String      @unique
   ownerId     Int
   owner       User        @relation(fields: [ownerId], references: [id])
   chat        Chat[]

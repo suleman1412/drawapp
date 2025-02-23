@@ -30,6 +30,7 @@ export default function Auth({ page }: {
     }
     return(
         <div>
+            <h1>{page[0]?.toUpperCase() + page.slice(1)}</h1>
             <form onSubmit={handleSubmit}>
                 <input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
                 <input placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>

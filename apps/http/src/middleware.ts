@@ -3,16 +3,28 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export function authMiddleware(req:Request, res:Response, next:NextFunction){
-    const token = req.headers['authorization'] ?? ""
+    try{
+        const token = req.headers['authorization'] || null
 
-    const decoded = jwt.verify(token, JWT_SECRET)
+        if(!token){
+            res.status(401).json({
+                message: "Unauthorized"
+            })
+            throw new Error('Unauthorized')
+        }
+        const decoded = jwt.verify(token, JWT_SECRET)
+        
+        if(!decoded){
+            res.status(403).json({
+                message: "Unauthorized user"
+            })
+        }
 
-    if(decoded){
         req.userId = (decoded as JwtPayload).userId
+        console.log(req.userId)
         next()
-    } else {
-        res.status(403).json({
-            message: "Unauthorized user"
-        })
+
+    } catch(e){
+        // console.error(e)
     }
 }

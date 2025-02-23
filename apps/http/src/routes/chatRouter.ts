@@ -1,27 +1,36 @@
+import { RoomIdSchema } from "@repo/common/schema";
 import { prismaClient } from "@repo/db/db";
 import { Router } from "express";
 
 export const chatRouter: Router = Router()
 
 chatRouter.get('/:roomId', async(req, res) => {
-    const { roomId } = req.params;
     try{
+        const roomId = RoomIdSchema.safeParse(req.params);
+        if(!roomId.success && !roomId.data){
+            res.status(400).json({
+                message: "Not a valid roomId",
+                error: roomId.error.errors,
+            });
+            return;
+        }
+        
         const chats = await prismaClient.chat.findMany({
-            where: { roomId: roomId },
+            where: { roomId: roomId.data },
             orderBy: { createdAt: 'desc' },
             take: 50
         })
     
         if(chats.length === 0){
             res.json({
-                message: `No chats found for this room ${roomId}`,
+                message: `No chats found for this room ${roomId.data}`,
                 chats
             })
             return;
         }
     
         res.json({
-            message: `Chats for room ${roomId}`,
+            message: `Chats for room ${roomId.data}`,
             chats
         })
     } catch(err){
