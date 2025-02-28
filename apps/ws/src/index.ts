@@ -29,8 +29,12 @@ const authenticateUser = (token : string): string | null => {
 wss.on('connection', (socket, req) => {
     try{
         const url = req.url;
+        // if(!url) return;
+        // const parsedUrl = new URL(url);
+        // console.log("parsedURL ", parsedUrl)
         const queryParams = new URLSearchParams(url?.split('?')[1])
         const token  = queryParams.get('token')
+        // const roomId = parsedUrl.searchParams.get('roomId');
     
         if(!token){
             throw new Error('Please provide a token')

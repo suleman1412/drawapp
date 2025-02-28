@@ -1,6 +1,7 @@
 import { RoomIdSchema } from "@repo/common/schema";
 import { prismaClient } from "@repo/db/db";
 import { Router } from "express";
+import { authMiddleware } from "../middleware";
 
 export const chatRouter: Router = Router()
 

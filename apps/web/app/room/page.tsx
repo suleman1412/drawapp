@@ -3,7 +3,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 
 export default function GetRooms() {
-    const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001'
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'
     const [rooms, setRooms] = useState([]);
 
     useEffect(() => {

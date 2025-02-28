@@ -5,7 +5,7 @@ import { FormEvent, useState } from "react"
 import { RoomIdSchema } from '@repo/common/schema'
 
 export default function Home () {
-    const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001'
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'
     const [roomName, setRoomName] = useState('')
     const router = useRouter()
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

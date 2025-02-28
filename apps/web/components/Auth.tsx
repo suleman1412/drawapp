@@ -6,7 +6,7 @@ import { useState } from "react"
 export default function Auth({ page }: {
     page: "signin" | "signup"
 }){
-    const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3001'
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001'
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const router = useRouter()
