@@ -8,14 +8,15 @@ import { JWT_SECRET } from "@repo/backend-common/config";
 export const authRouter: Router = Router()
 
 authRouter.post('/signup', async (req, res) => {
-    const { data, success, error } = AuthSchema.safeParse(req.body)
-    if(!success && !data){
-        res.json({
-            error: error
-        })
-        return;
-    }
     try{
+        const { data, success, error } = AuthSchema.safeParse(req.body)
+        if(!success && !data){
+            res.status(400).json({
+                message: "Validation error",
+                error: error.errors, 
+            });
+            return;
+        }
         const hashedPassword = await bcrypt.hash(data.password, 5)
         const user = await prismaClient.user.create({
             data: {
@@ -37,14 +38,15 @@ authRouter.post('/signup', async (req, res) => {
     }
 })
 authRouter.post('/signin', async (req, res) => {
-    const { data, success, error } = AuthSchema.safeParse(req.body)
-    if(!success){
-        res.json({
-            error: error
-        })
-        return;
-    }
     try{
+        const { data, success, error } = AuthSchema.safeParse(req.body)
+        if(!success && !data){
+            res.status(400).json({
+                message: "Validation error",
+                error: error.errors,
+            });
+            return;
+        }
         const user = await prismaClient.user.findUnique({
             where: {
                 username: data.username
@@ -70,15 +72,16 @@ authRouter.post('/signin', async (req, res) => {
             userId: user.id
         }, JWT_SECRET)
 
-        res.json({
+        res.status(201).json({
             message: `Signed in ${data.username} !`,
             token: token
         })
+
     } catch(err){
-        console.error("Error signing up:", err);
+        console.error("Error creating user:", err);
         res.status(500).json({
-            message: "Failed to sign in",
-            error: err
+            message: "Failed to create user",
+            error: err instanceof Error ? err.message : "Internal server error", 
         });
     }
 })
